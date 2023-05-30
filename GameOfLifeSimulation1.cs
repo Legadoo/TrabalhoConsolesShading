@@ -22,6 +22,7 @@ public class GameOfLifeSimulation1 : MonoBehaviour
     {
         CreateGrid();                       // Cria a grade
         InitializeGrid();                   // Inicializa o estado da grade
+        InitializeGameOfLifeTexture();
     }
 
     private void CreateGrid()
@@ -65,20 +66,24 @@ public class GameOfLifeSimulation1 : MonoBehaviour
 
     private void Update()
     {   
-       // if(isRunning == true)
-        //UpdateGameOfLifeGPU();
+        if(isRunning == true){
+        UpdateGameOfLifeGPU();
+        UpdateGrid();
+        }
         
         if (Input.GetMouseButtonDown(0))
         {
             HandleMouseInput();              // Trata a entrada do mouse
         }
+    
     }
 
-    // private void FixedUpdate(){
-    //     if(isRunning == true)
-    //     InitializeGameOfLifeTexture();
-    //     UpdateGameOfLifeGPU();
-    // }
+    private void FixedUpdate(){
+        // if(isRunning == true){
+            
+        //     UpdateGameOfLifeGPU();
+        // }
+    }
 
     private void HandleMouseInput()
     {
@@ -216,18 +221,19 @@ private void InitializeGameOfLifeTexture()
 
 public void UpdateGameOfLifeGPU()
 {
-    kernelIndex = computeShader.FindKernel("UpdateGameOfLife");
+    kernelIndex = 0; //computeShader.FindKernel("UpdateGameOfLife");
 
     if (gameOfLifeTexture != null)
     {
         // Defina a textura no shader de computação
-        computeShader.SetTexture(kernelIndex, "gameOfLifeTexture", gameOfLifeTexture);
+        computeShader.SetTexture(kernelIndex, "Result", gameOfLifeTexture);
+        computeShader.Dispatch(kernelIndex, gridSize / 8, gridSize / 8, 1);
     }
     else
     {
         Debug.LogError("gameOfLifeTexture is null");
     }
-    computeShader.Dispatch(kernelIndex, gridSize / 8, gridSize / 8, 1);
+    
 }
 
 
@@ -253,11 +259,11 @@ public void UpdateGameOfLifeGPU()
                     // Iniciar a simulação na GPU
                     UpdateGameOfLifeGPU();
                 }
-                else
-                {
-                    // Iniciar a simulação na CPU                  
-                    UpdateGrid();                  
-                }
+                // else
+                // {
+                //     // Iniciar a simulação na CPU                  
+                //     UpdateGrid();                  
+                // }
             }
         }
 
