@@ -17,12 +17,18 @@ public class GameOfLifeSimulation1 : MonoBehaviour
     public ComputeShader computeShader;
     private int kernelIndex;
     private RenderTexture gameOfLifeTexture;
+    //private float deltaTime = 0.0f;
+    // public float executionTimeWithoutOptimization;
+    // public float executionTimeWithOptimization;
+
 
     private void Start()
     {
         CreateGrid();                       // Cria a grade
         InitializeGrid();                   // Inicializa o estado da grade
         InitializeGameOfLifeTexture();
+        // float speedup = CalculateSpeedup(executionTimeWithoutOptimization, executionTimeWithOptimization);
+        // Debug.Log("Speedup: " + speedup);
     }
 
     private void CreateGrid()
@@ -66,6 +72,9 @@ public class GameOfLifeSimulation1 : MonoBehaviour
 
     private void Update()
     {   
+
+        //deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+
         if(isRunning == true){
         UpdateGameOfLifeGPU();
         UpdateGrid();
@@ -274,5 +283,22 @@ public void UpdateGameOfLifeGPU()
         {
             useGPU = !useGPU;
         }
+
+        // int fps = Mathf.RoundToInt(1.0f / deltaTime);
+        // GUIStyle style = new GUIStyle();
+        // style.normal.textColor = Color.white;
+        // GUI.Label(new Rect(10, 10, 100, 20), "FPS: " + fps, style);
+ 
+
     }
+    // private float CalculateSpeedup(float timeWithoutOptimization, float timeWithOptimization)
+    // {
+    //     if (timeWithOptimization <= 0f)
+    //     {
+    //         return 0f; // Avoid division by zero
+    //     }
+        
+    //     return timeWithoutOptimization / timeWithOptimization;
+    // }
+
 }
